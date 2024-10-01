@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crear Vehículo</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+</head>
+<body>
+<div class="container">
+    <h1 class="mt-4">Configura tu Vehículo</h1>
+    <form id="vehicleForm">
+        <!-- Marca del Vehículo -->
+        <div class="form-group">
+            <label for="brand">Marca del Vehículo:</label>
+            <select class="form-control" id="brand" name="brand" required>
+                <option value="toyota">Toyota</option>
+                <option value="ford">Ford</option>
+                <option value="mazda">Mazda</option>
+            </select>
+        </div>
+
+        <!-- Color del Vehículo -->
+        <div class="form-group">
+            <label for="color">Color:</label>
+            <select class="form-control" id="color" name="color" required>
+                <option value="rojo">Rojo</option>
+                <option value="azul">Azul</option>
+                <option value="negro">Negro</option>
+                <option value="blanco">Blanco</option>
+            </select>
+        </div>
+
+        <!-- Modelo del Vehículo -->
+        <div class="form-group">
+            <label for="modelo">Modelo:</label>
+            <select class="form-control" id="modelo" name="modelo" required>
+                <option value="sedan">Sedán</option>
+                <option value="suv">SUV</option>
+                <option value="pickup">Pickup</option>
+            </select>
+        </div>
+
+        <h4>Motor</h4>
+        <!-- Modelo del Motor -->
+        <div class="form-group">
+            <label for="motorModel">Modelo del Motor:</label>
+            <select class="form-control" id="motorModel" name="motorModel" required>
+                <option value="v6">V6</option>
+                <option value="v8">V8</option>
+                <option value="electric">Eléctrico</option>
+            </select>
+        </div>
+
+        <!-- Potencia Máxima del Motor -->
+        <div class="form-group">
+            <label for="motorMaxPower">Potencia Máxima (hp):</label>
+            <select class="form-control" id="motorMaxPower" name="motorMaxPower" required>
+                <option value="150">150 hp</option>
+                <option value="250">250 hp</option>
+                <option value="350">350 hp</option>
+            </select>
+        </div>
+
+        <!-- Tecnología del Motor -->
+        <div class="form-group">
+            <label for="motorTechnology">Tecnología del Motor:</label>
+            <select class="form-control" id="motorTechnology" name="motorTechnology" required>
+                <option value="hibrido">Híbrido</option>
+                <option value="turbo">Turbo</option>
+                <option value="electric">Eléctrico</option>
+            </select>
+        </div>
+
+        <h4>Chasis</h4>
+        <!-- Modelo del Chasis -->
+        <div class="form-group">
+            <label for="chasisModel">Modelo del Chasis:</label>
+            <select class="form-control" id="chasisModel" name="chasisModel" required>
+                <option value="toyota">Toyota</option>
+                <option value="ford">Ford</option>
+                <option value="mazda">Mazda</option>
+            </select>
+        </div>
+
+        <!-- Material del Chasis -->
+        <div class="form-group">
+            <label for="chasisMaterial">Material del Chasis:</label>
+            <select class="form-control" id="chasisMaterial" name="chasisMaterial" required>
+                <option value="aluminio">Aluminio</option>
+                <option value="acero">Acero</option>
+                <option value="fibra">Fibra de carbono</option>
+            </select>
+        </div>
+
+        <h4>Cojinería</h4>
+        <!-- Modelo de Cojinería -->
+        <div class="form-group">
+            <label for="cojineriaModel">Modelo de Cojinería:</label>
+            <select class="form-control" id="cojineriaModel" name="cojineriaModel" required>
+                <option value="toyota">Toyota</option>
+                <option value="ford">Ford</option>
+                <option value="mazda">Mazda</option>
+            </select>
+        </div>
+
+        <!-- Material de Cojinería -->
+        <div class="form-group">
+            <label for="cojineriaMaterial">Material de Cojinería:</label>
+            <select class="form-control" id="cojineriaMaterial" name="cojineriaMaterial" required>
+                <option value="cuero">Cuero</option>
+                <option value="tela">Tela</option>
+                <option value="alcantara">Alcántara</option>
+            </select>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Crear Vehículo</button>
+    </form>
+
+    <div id="response" class="mt-4"></div>
+</div>
+
+<script>
+    document.getElementById("vehicleForm").addEventListener("submit", function(event) {
+        event.preventDefault();
+
+        // Obtener los valores del formulario
+        const modelo = document.getElementById("modelo").value;
+        const color = document.getElementById("color").value;
+        const motorModel = document.getElementById("motorModel").value;
+        const motorMaxPower = parseInt(document.getElementById("motorMaxPower").value, 10);
+        const motorTechnology = document.getElementById("motorTechnology").value;
+        const chasisModel = document.getElementById("chasisModel").value;
+        const chasisMaterial = document.getElementById("chasisMaterial").value;
+        const cojineriaModel = document.getElementById("cojineriaModel").value;
+        const cojineriaMaterial = document.getElementById("cojineriaMaterial").value;
+
+        // Construir el objeto que se enviará al backend
+        const vehicleData = {
+            modelo: modelo,
+            motor: {
+                model: motorModel,
+                maxPower: motorMaxPower,
+                technology: motorTechnology
+            },
+            chasis: {
+                model: chasisModel,
+                material: chasisMaterial
+            },
+            cojineria: {
+                model: cojineriaModel,
+                material: cojineriaMaterial
+            }
+        };
+
+        // Hacer una solicitud POST al backend para crear el vehículo
+        fetch('http://localhost:8080/api/vehicles', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(vehicleData),
+        })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                document.getElementById("response").innerHTML = `
+                <div class="alert alert-success">
+                    Vehículo creado con éxito: ${data.modelo} - ${data.motor.model}
+                </div>
+            `;
+            })
+            .catch(error => {
+                document.getElementById("response").innerHTML = `
+                <div class="alert alert-danger">
+                    Error al crear el vehículo: ${error.message}
+                </div>
+            `;
+            });
+    });
+</script>
+
+</body>
+</html>
